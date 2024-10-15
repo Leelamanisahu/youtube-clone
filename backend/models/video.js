@@ -1,0 +1,49 @@
+import mongoose from 'mongoose';
+const videoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  video:{
+    type:String,
+  },
+  thumbnail: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  channelId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Channel', // Reference to Channel model
+    required: true,
+  },
+  uploader: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User', // Reference to User model (the uploader)
+    required: true,
+  },
+  views: {
+    type: Number,
+    default: 0,
+  },
+  likes: [{
+    type: mongoose.Schema.ObjectId,
+  }],
+  dislikes: [{
+    type: mongoose.Schema.ObjectId,
+  }],
+  uploadDate: {
+    type: Date,
+    required: true,
+  },
+  comments: [{
+    type: mongoose.Schema.ObjectId,
+  }], // Array of embedded comment schemas
+}, { timestamps: true });
+
+const Video = mongoose.model('Video', videoSchema);
+
+export default Video;

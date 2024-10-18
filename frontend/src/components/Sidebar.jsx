@@ -24,8 +24,12 @@ import { SiStylelint } from "react-icons/si";
 import { MdPodcasts } from "react-icons/md";
 import { BiVideo } from "react-icons/bi";
 import { GiLinkedRings } from "react-icons/gi";
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
+
+  const toggle = useSelector((state)=>state.toggle)
+  
     const sidebarItems = [
         {
           id: 1,
@@ -156,22 +160,30 @@ const Sidebar = () => {
       ];
 
   return (
-    <div className="px-6 w-[16%] h-[calc(100vh-6.625rem)]  overflow-y-scroll overflow-x-hidden ">
+    <div className={`px-6 ${toggle.isOpen ? 'w-[16%] ':' w-[6%] hide-scroll-bar'} h-[calc(100vh-6.625rem)]  overflow-y-scroll overflow-x-hidden`}>
       <div className=" space-y-3 items-center">
         {sidebarItems.map((item) => {
           return (
             <div
               key={item.id}
-              className="flex items-center space-x-6 hover:bg-gray-300 duration-300 rounded-xl p-2"
+              className={` flex items-center space-x-6 hover:bg-gray-300 duration-300 rounded-xl p-2`}
             >
               <div className="text-xl cursor-pointer">{item.icon}</div>
-              <span className="cursor-pointer">{item.name}</span>
+              {
+                toggle.isOpen?
+                <span className={`cursor-pointer`}>{item.name}</span>
+                :
+                null
+              }
             </div>
           );
         })}
       </div>
       <br />
       <hr />
+      { 
+     toggle.isOpen ?
+     <>
       <div className="mt-4 space-y-3 items-center">
         <div className="flex items-center space-x-2">
           <h1>You</h1>
@@ -229,6 +241,8 @@ const Sidebar = () => {
         <hr />
       </div>
       <br />
+    
+     
       <span className="text-xs text-gray-600 font-semibold">
         About Press Copyright <br /> Contact us Creators <br /> Advertise
         Developers <br />
@@ -237,6 +251,9 @@ const Sidebar = () => {
       </span>
       <br />
       <p className="text-xs text-gray-500 mt-3">© 2024 Learn Coding</p>
+      </>
+      :null
+      }
     </div>
   )
 }

@@ -1,13 +1,16 @@
+import mongoose from "mongoose";
 import Channel from "../models/channel.js";
 import Comment from "../models/comment.js";
 import Video from "../models/video.js";
 import CustomError from "../utils/CustomeError.js";
+import { getVideoDurationInSeconds } from 'get-video-duration';
+import path from 'path';
 
 export const addVideo = async (req, res, next) => {
     try {
       const uploader = req.user.id;
       const files = req.files;
-      const { title, description, channelId } = req.body;
+      const { title, description, channelId,genere } = req.body;
        
       // Check if all required files are present
       if (!files || !files.video || !files.thumbnail) {
@@ -31,9 +34,16 @@ export const addVideo = async (req, res, next) => {
       const videoPath = `/videos/${videoFile.filename}`;
       const thumbnailPath = `/images/${thumbnailFile.filename}`;
   
+
+      const absoluteVideoPath = path.resolve(`public${videoPath}`);
+
+        // Get video duration
+        const duration = await getVideoDurationInSeconds(absoluteVideoPath);
+        console.log('Video Duration:', duration);
       // Log file paths to check if they're correct
     //   console.log('Video Path:', videoPath);
     //   console.log('Thumbnail Path:', thumbnailPath);
+    const genereArr = genere.split(",");
   
       // Create new video object
       const video = new Video({
@@ -41,9 +51,11 @@ export const addVideo = async (req, res, next) => {
         description,
         channelId,
         uploader,
+        duration,
         thumbnail: thumbnailPath,
         video: videoPath,
         uploadDate: new Date(),
+        genere:genereArr,
       });
 
       // Handle the channel's videos array
@@ -53,7 +65,6 @@ export const addVideo = async (req, res, next) => {
   
       // Push new video ID to the channel's videos array
       isExist.videos.push(video._id);
-  
       // Save both the channel and video
       await isExist.save();
       await video.save();
@@ -70,6 +81,13 @@ export const addVideo = async (req, res, next) => {
 export const getVideo = async(req,res,next)=>{
     try {
         // const videos = await Video.find({});
+
+        const { genre } = req.query;
+
+        const genereMatch = {
+            $match: genre ? { genere: { $in: [genre] } } : {} // Filter by genre if provided
+        };
+
         const pipeline = [
             {
                 $lookup:{
@@ -98,12 +116,66 @@ export const getVideo = async(req,res,next)=>{
                     description: 1,
                     channelName:'$channelInfo.channelName',
                     views:1,
-                    likes:{$size:"$likes"},
+                    duration:1,
+                    genere:1,
+                    likes:{$size:"$likes"}, 
+                    dislikes:{$size:"$dislikes"},
+                }
+            }
+        ]
+
+        if(genre){
+            pipeline.unshift(genereMatch);
+        }
+        const videos = await Video.aggregate(pipeline)
+        return res.status(200).json(videos);
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getOneVideo = async(req,res,next)=>{
+    try {
+        const videoId = new mongoose.Types.ObjectId(req.params.id)
+        const pipeline = [
+            {
+                $match:{_id:videoId}
+            },
+            {
+                $lookup:{
+                    from :"channels",
+                    localField:"channelId",
+                    foreignField:"_id",
+                    as:"channelInfo"
+                }
+            },
+            {
+                $lookup:{
+                    from :"users",
+                    localField:"uploader",
+                    foreignField:"_id",
+                    as:"userInfo"
+                }
+            },
+            {$unwind: "$channelInfo"},
+            {$unwind:"$userInfo"},
+            {
+                $project:{
+                    _id:1,
+                    title: 1,
+                    video:1,
+                    thumbnail: 1,
+                    description: 1,
+                    channelName:'$channelInfo.channelName',
+                    views:1,
+                    genere:1,
+                    likes:{$size:"$likes"}, 
                     dislikes:{$size:"$dislikes"},
                 }
             }
         ]
         const videos = await Video.aggregate(pipeline)
+        
         return res.status(200).json(videos);
     } catch (error) {
         next(error)

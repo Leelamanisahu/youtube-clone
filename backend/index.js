@@ -5,9 +5,14 @@ import userRouter from './routes/userRoute.js';
 import channelRouter from './routes/channelRoute.js';
 import CustomError from './utils/CustomeError.js';
 import videoRouter from './routes/videoRoute.js';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors({
+    origin: 'http://localhost:5173',  // Replace with your frontend domain
+    credentials: true
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

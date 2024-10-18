@@ -46,7 +46,7 @@ export const login = async(req,res,next)=>{
             return next(new CustomError("Wrong credential",401))
         }
         const token = generateToken(isValid._id,'10h');
-        return res.status(200).json({isValid,token});
+        return res.status(200).json({user:isValid,token});
     } catch (error) {
         next(error);
     }

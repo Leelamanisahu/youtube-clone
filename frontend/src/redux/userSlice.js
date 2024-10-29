@@ -6,6 +6,7 @@ const initialState = {
     username:null,
     email:null,
     token:null,
+    channels:null,
     loading:false,
     error:false
 }
@@ -23,6 +24,7 @@ export const userSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.token = action.payload.token;
+            state.channels = action.payload.channels;
         },
         loginFalure:(state)=>{
             state.error = true;
@@ -30,7 +32,8 @@ export const userSlice = createSlice({
         },
         logout:(state)=>{
             state.loading = false;
-            state.userName = null;
+            state.username = null;
+            state._id = null;
             state.email = null;
             state.token = null;
         }

@@ -6,6 +6,11 @@ const commentSchema = new mongoose.Schema({
       ref: 'User', // Assuming comments reference the User model
       required: true,
     },
+    videoId:{
+      type:Schema.ObjectId,
+      ref:'Video',
+      required:true,
+    },
     text: {
       type: String,
       required: true,

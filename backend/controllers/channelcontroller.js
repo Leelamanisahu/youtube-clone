@@ -6,6 +6,7 @@ import CustomError from "../utils/CustomeError.js";
 export const createChannel = async(req,res,next)=>{
     try {
         const file = req.file;
+        
         const {channelName,description} = req.body;
         const owner = req.user.id;
         const isExist = await Channel.findOne({channelName});
@@ -16,7 +17,7 @@ export const createChannel = async(req,res,next)=>{
         channelName,owner,channelBanner:`/images/${file.filename}`,description
        })
        await channel.save();
-       const user = await User.findByIdAndUpdate(owner,{$push:{channels:channel._id}});
+       const user = await User.findByIdAndUpdate(owner,{$set:{channels:channel._id}});
        return res.status(200).json(channel);
     } catch (error) {
         next(error);
@@ -77,7 +78,7 @@ export const updateChannel = async (req, res, next) => {
 export const getMyChannel = async(req,res,next)=>{
     try {
         const userId = req.user.id;
-        const myChannel = await Channel.find({owner:userId});
+        const myChannel = await Channel.find({owner:userId}).populate('videos');
         return res.status(200).json(myChannel);
     } catch (error) {
         next(error);
@@ -87,7 +88,13 @@ export const getMyChannel = async(req,res,next)=>{
 
 export const findChannel = async(req,res,next)=>{
     try {
-        const channel = await Channel.find({});
+      const channelId = req.params.id;
+      let channel;
+      if(channelId){
+        channel = await Channel.findById(channelId).populate('videos');
+      }else{
+        channel = await Channel.find({}).populate('videos');
+      }
         return res.status(200).json(channel);
     } catch (error) {
         next(error);

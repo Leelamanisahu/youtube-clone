@@ -9,7 +9,7 @@ const channelRouter = express.Router();
 channelRouter.post("/create",protect, upload.single('file'), createChannel)
 .patch("/update/:id",protect,upload.single('file'), updateChannel)
 .get("/mychannels",protect,getMyChannel)
-.get("/get",findChannel)
+.get("/get/:id?",protect,findChannel)
 .delete("/delete/:id",protect,deleteChannel);
 
 export default channelRouter;

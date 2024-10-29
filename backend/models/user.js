@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     
   },
-  channels: [{
+  channels: {
     type: mongoose.Schema.ObjectId,
     ref: 'Channel', 
-  }],
+  },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

@@ -134,6 +134,73 @@ export const getVideo = async(req,res,next)=>{
     }
 }
 
+
+export const suggetionVideo = async(req, res, next) => {
+    try {
+        const { genre } = req.query;
+
+        // Declare `genreArray` outside of the if block
+        let genreArray = [];
+
+        // Check if `genre` is provided and convert it to an array if it's not already an array
+        if (genre) {
+            genreArray = genre.split(",");
+        }
+
+        const genereMatch = {
+            $match: genreArray.length > 0 ? { genere: { $in: genreArray } } : {} // Filter by genre array if provided
+        };
+
+        const pipeline = [
+            {
+                $lookup: {
+                    from: "channels",
+                    localField: "channelId",
+                    foreignField: "_id",
+                    as: "channelInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "uploader",
+                    foreignField: "_id",
+                    as: "userInfo"
+                }
+            },
+            { $unwind: "$channelInfo" },
+            { $unwind: "$userInfo" },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    video: 1,
+                    thumbnail: 1,
+                    description: 1,
+                    channelName: '$channelInfo.channelName',
+                    views: 1,
+                    duration: 1,
+                    genere: 1,
+                    likes: { $size: "$likes" },
+                    dislikes: { $size: "$dislikes" },
+                }
+            }
+        ];
+
+        // If `genre` is provided, add the `$match` stage at the start of the pipeline
+        if (genreArray.length > 0) {
+            pipeline.unshift(genereMatch);
+        }
+
+        const videos = await Video.aggregate(pipeline);
+        return res.status(200).json(videos);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export const getOneVideo = async(req,res,next)=>{
     try {
         const videoId = new mongoose.Types.ObjectId(req.params.id)
@@ -147,6 +214,14 @@ export const getOneVideo = async(req,res,next)=>{
                     localField:"channelId",
                     foreignField:"_id",
                     as:"channelInfo"
+                }
+            },
+            {
+                $lookup:{
+                    from :"comments",
+                    localField:"comments",
+                    foreignField:"_id",
+                    as:"commentInfo"
                 }
             },
             {
@@ -169,8 +244,8 @@ export const getOneVideo = async(req,res,next)=>{
                     channelName:'$channelInfo.channelName',
                     views:1,
                     genere:1,
-                    likes:{$size:"$likes"}, 
-                    dislikes:{$size:"$dislikes"},
+                    likes:1, 
+                    dislikes:1,
                 }
             }
         ]
@@ -186,6 +261,8 @@ export const likeOrDislikeVideo = async (req, res, next) => {
     const videoId = req.params.id; // Video being reacted to
     const { action } = req.query; // 'like' or 'dislike'
     const userId = req.user.id;
+
+   
 
     try {
         // Find the video by ID
@@ -241,16 +318,48 @@ export const addComment = async(req,res,next)=>{
         const videoId = req.params.id;
         const comment = new Comment({
             userId,
+            videoId,
             text
         })
-        
-        const video = await Video.findById(videoId);
         await comment.save();
-        video.comments.push(comment);
-        await video.save();
+     
         return res.status(200).json({message:"Comment has been added to the video",comment})
     } catch (error) {
         next(error);
+    }
+}
+
+export const getVideoComment = async(req,res,next)=>{
+    try {
+    const videoId = new mongoose.Types.ObjectId(req.params.id);
+
+    const pipeline = [
+        {
+           $match:{videoId:videoId}
+        },
+        {
+            $lookup:{
+                from:"users",
+                localField:"userId",
+                foreignField:"_id",
+                as:'userInfo'
+            }
+        },
+        {$unwind:"$userInfo"},
+        {
+            $project:{
+                _id:1,
+                username:"$userInfo.username",
+                userId:"$userInfo._id",
+                createdAt:1,
+                text:1,
+            }
+        }
+    ]
+        const comments = await Comment.aggregate(pipeline);
+        return res.status(200).json(comments);
+    } catch (error) {
+        next(error);   
     }
 }
 

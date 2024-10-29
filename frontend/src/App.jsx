@@ -20,6 +20,7 @@ const App = () => {
   const token = Cookies.get('access_token');
   const currentUser = useSelector((state) => state.user.username);
 
+
   const isTokenExpired = (token) => {
     if (!token) return true;
     const { exp } = jwtDecode(token);
@@ -28,15 +29,17 @@ const App = () => {
 
 useEffect(() => {
     // Check token expiration on component mount
-    console.log(isTokenExpired(token))
+  
     if (isTokenExpired(token)) {
         dispatch(logout());
+        Cookies.remove('access_token')
     }
 
     // Set up an interval to periodically check token expiration
     const intervalId = setInterval(() => {
         if (isTokenExpired(token)) {
             dispatch(logout());
+            Cookies.remove('access_token')
         }
     }, 60000); // Check every minute
 

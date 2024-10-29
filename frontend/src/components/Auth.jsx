@@ -64,7 +64,8 @@ const Auth = () => {
             _id:data.user._id,
             username:data.user.username,
             email : data.user.email,
-            token : data.token
+            token : data.token,
+            channels:data.user.channels
         }))
         // console.log('Success:', data.user);
         Cookies.set('access_token', data.token, { expires: 1, sameSite: 'None', secure: true });
@@ -73,8 +74,8 @@ const Auth = () => {
         setError(response.data.message);
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
-      console.error('Error:', err);
+      setError(err.response.data.message);
+      // console.error('Error:', err);
     }
   };
 

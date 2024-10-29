@@ -45,9 +45,9 @@ const videoSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  comments: [{
-    type: mongoose.Schema.ObjectId,
-  }], // Array of embedded comment schemas
+  // comments: [{
+  //   type: mongoose.Schema.ObjectId,
+  // }], // Array of embedded comment schemas
 }, { timestamps: true });
 
 const Video = mongoose.model('Video', videoSchema);

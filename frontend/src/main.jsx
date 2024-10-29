@@ -9,7 +9,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import Home from './components/Home.jsx'
 import Auth from './components/Auth.jsx'
-import VideoPlayer from './components/VideoPage.jsx'
+import VideoPage from './components/VideoPage.jsx'
+import Channel from './components/Channel.jsx'
 
 
 
@@ -28,7 +29,11 @@ const appRouter = createBrowserRouter([
       },
       {
         path:"/video/:id",
-        element:<VideoPlayer/>
+        element:<VideoPage/>
+      },
+      {
+        path:"/channel/:channelId",
+        element:<Channel/>
       }
      
     ]

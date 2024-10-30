@@ -4,6 +4,7 @@ import Comment from "../models/comment.js";
 import Video from "../models/video.js";
 import CustomError from "../utils/CustomeError.js";
 import { getVideoDurationInSeconds } from 'get-video-duration';
+import fs from 'fs';
 import path from 'path';
 
 export const addVideo = async (req, res, next) => {
@@ -39,10 +40,6 @@ export const addVideo = async (req, res, next) => {
 
         // Get video duration
         const duration = await getVideoDurationInSeconds(absoluteVideoPath);
-        console.log('Video Duration:', duration);
-      // Log file paths to check if they're correct
-    //   console.log('Video Path:', videoPath);
-    //   console.log('Thumbnail Path:', thumbnailPath);
     const genereArr = genere.split(",");
   
       // Create new video object
@@ -386,3 +383,98 @@ export const deleteComment = async(req,res,next)=>{
         next(error)
     }
 }
+
+export const deleteVideo = async(req,res,next)=>{
+    try {
+        const { videoId } = req.params;
+        const userId = req.user.id;
+    
+        // Find the video by ID
+        const video = await Video.findById(videoId);
+        if (!video) {
+          return next(new CustomError('Video not found', 404));
+        }
+    
+        // Check if the user is the uploader 
+        if (video.uploader.toString() !== userId) {
+          return next(new CustomError('Unauthorized to delete this video', 403));
+        }
+    
+        // Get associated channel
+        const channel = await Channel.findById(video.channelId);
+        if (!channel) {
+          return next(new CustomError('Associated channel not found', 404));
+        }
+    
+        // Remove video ID from the channel's videos array
+        channel.videos = channel.videos.filter(id => id.toString() !== videoId);
+        await channel.save();
+    
+        // Delete the video and thumbnail files
+        const videoFilePath = path.resolve(`public${video.video}`);
+        const thumbnailFilePath = path.resolve(`public${video.thumbnail}`);
+        if (fs.existsSync(videoFilePath)) fs.unlinkSync(videoFilePath);
+        if (fs.existsSync(thumbnailFilePath)) fs.unlinkSync(thumbnailFilePath);
+        
+        // Delete the video document
+        await Video.findByIdAndDelete(videoId);
+    
+        return res.status(200).json({ message: 'Video deleted successfully' });
+      } catch (error) {
+        console.log(error);
+        next(error);
+      }
+}
+
+
+
+export const updateVideo = async (req, res, next) => {
+    try {
+        const { videoId } = req.params;
+        const { title, description, genere, channelId } = req.body;
+        const files = req.files;
+
+        // Find the video by ID
+        const video = await Video.findById(videoId);
+        if (!video) {
+            return next(new CustomError('Video not found', 404));
+        }
+
+        // Check if channel exists
+        const channel = await Channel.findById(channelId);
+        if (!channel) {
+            return next(new CustomError('Channel not found', 404));
+        }
+
+        // Update video details selectively
+        if (title) video.title = title;
+        if (description) video.description = description;
+        if (genere) video.genere = genere.split(',');
+
+        // Handle video file update if new video file is provided
+        if (files && files.video) {
+            const videoFile = files.video[0];
+            const newVideoPath = `/videos/${videoFile.filename}`;
+            const absoluteVideoPath = path.resolve(`public${newVideoPath}`);
+            const duration = await getVideoDurationInSeconds(absoluteVideoPath);
+
+            video.video = newVideoPath;
+            video.duration = duration;
+        }
+
+        // Handle thumbnail file update if new thumbnail file is provided
+        if (files && files.thumbnail) {
+            const thumbnailFile = files.thumbnail[0];
+            const newThumbnailPath = `/images/${thumbnailFile.filename}`;
+            video.thumbnail = newThumbnailPath;
+        }
+
+        // Save the updated video
+        await video.save();
+
+        return res.status(200).json({ message: 'Video updated successfully', video });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};

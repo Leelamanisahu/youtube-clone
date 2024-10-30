@@ -6,7 +6,6 @@ import CustomError from "../utils/CustomeError.js";
 export const createChannel = async(req,res,next)=>{
     try {
         const file = req.file;
-        
         const {channelName,description} = req.body;
         const owner = req.user.id;
         const isExist = await Channel.findOne({channelName});
@@ -91,9 +90,9 @@ export const findChannel = async(req,res,next)=>{
       const channelId = req.params.id;
       let channel;
       if(channelId){
-        channel = await Channel.findById(channelId).populate('videos');
+        channel = await Channel.findById(channelId).populate('videos').populate('owner','username');
       }else{
-        channel = await Channel.find({}).populate('videos');
+        channel = await Channel.find({}).populate('videos').populate('owner','username');
       }
         return res.status(200).json(channel);
     } catch (error) {

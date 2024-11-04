@@ -69,17 +69,16 @@ const Auth = () => {
         }))
         // console.log('Success:', data.user);
         Cookies.set('access_token', data.token, { expires: 1, sameSite: 'None', secure: true });
-        
-        navigate("/");
+        window.location = "/";
+        // navigate("/");
       } else {
         setError(response.data.message);
       }
     } catch (err) {
       setError(err.response.data.message);
-      // console.error('Error:', err);
+      console.error('Error:', err);
     }
   };
-
 
   return (
     <div className="flex mt-20">

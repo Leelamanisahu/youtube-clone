@@ -39,7 +39,7 @@ const VideoUploadModal = ({ isOpen, isEdit, onClose, channelId, getChannelData }
             formData.append('channelId', channelId);
             if (isEdit) {
                 // Update existing video
-                await api.put(`/video/${isEdit._id}`, formData, {
+                await api.put(`/video/update/${isEdit._id}`, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
             } else {

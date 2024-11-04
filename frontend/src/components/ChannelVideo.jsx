@@ -29,7 +29,7 @@ const ChannelVideo = ({ video, onEdit, onDelete,editeable }) => {
             </div>
             {/* Three-Dot Menu Icon */}
             {
-                editeable &&
+             editeable &&
             <div className="absolute top-2 right-2 cursor-pointer" onClick={toggleMenu}>
                 <FiMoreHorizontal size={20} color='black' />
             </div>

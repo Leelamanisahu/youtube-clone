@@ -326,6 +326,36 @@ export const addComment = async(req,res,next)=>{
     }
 }
 
+
+export const updateComment = async (req, res, next) => {
+    try {
+      const { text } = req.body;
+      const commentId = req.params.commentId;
+      const userId = req.user.id;
+  
+      // Find the comment by ID
+      const comment = await Comment.findById(commentId);
+      if (!comment) {
+        return next(new CustomError("Comment not found", 404));
+      }
+  
+      // Check if the user is the owner of the comment
+      if (comment.userId.toString() !== userId) {
+        return next(new CustomError("Unauthorized to edit this comment", 403));
+      }
+  
+      // Update the comment text
+      comment.text = text;
+      await comment.save();
+  
+      return res.status(200).json({ message: "Comment updated successfully", comment });
+    } catch (error) {
+      next(error);
+    }
+  };
+  
+
+
 export const getVideoComment = async(req,res,next)=>{
     try {
     const videoId = new mongoose.Types.ObjectId(req.params.id);
@@ -360,29 +390,29 @@ export const getVideoComment = async(req,res,next)=>{
     }
 }
 
-export const deleteComment = async(req,res,next)=>{
+export const deleteComment = async (req, res, next) => {
     try {
-        const {commentId} = req.body;
-        const videoId = req.params.id;
-        const isExist = await Video.findById(videoId);
-        console.log(isExist);
-        if(!isExist){
-            return next(new CustomError("Video not found",404));
-        }
-        const isComment = await Comment.findById(commentId);
-        if(!isComment){
-            return next(new CustomError("comment not found",404));
-        }
-        let comments = isExist.comments;
-       let newComments = comments.filter((com)=>com._id != commentId);
-       isExist.comments = newComments;
-       isExist.save();
-     const deletedComment=  await Comment.findByIdAndDelete(commentId);
-       return res.status(200).json({messege:"comment delete succesfully",deletedComment})
+      const commentId = req.params.commentId;
+      const userId = req.user.id;
+  
+      // Find the comment by ID
+      const comment = await Comment.findById(commentId);
+      if (!comment) {
+        return next(new CustomError("Comment not found", 404));
+      }
+      // Check if the user is the owner of the comment
+      if (comment.userId.toString() !== userId) {
+        return next(new CustomError("Unauthorized to delete this comment", 403));
+      }
+  
+      // Delete the comment
+      await Comment.findByIdAndDelete(commentId);
+  
+      return res.status(200).json({ message: "Comment deleted successfully" });
     } catch (error) {
-        next(error)
+      next(error);
     }
-}
+  };
 
 export const deleteVideo = async(req,res,next)=>{
     try {
@@ -439,7 +469,6 @@ export const updateVideo = async (req, res, next) => {
         if (!video) {
             return next(new CustomError('Video not found', 404));
         }
-
         // Check if channel exists
         const channel = await Channel.findById(channelId);
         if (!channel) {

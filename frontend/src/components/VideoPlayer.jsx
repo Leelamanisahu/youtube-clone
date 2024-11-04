@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { dislike, like } from '../redux/videoSlice';
 import Comment from './Comment';
 import { formatDistanceToNow } from 'date-fns';
+import CommentsList from './CommentLIst';
 
 const VideoPlayer = () => {
 
@@ -60,17 +61,38 @@ const VideoPlayer = () => {
     setIsComment(false);
   }
 
+  const handleEditComment = async(commentId,text)=>{
+    try {
+        const response = await api.put(`/video/update-comments/${commentId}`,{
+          text
+        })
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment._id === commentId ? { ...comment, text: text } : comment
+          )
+        );
+        } catch (error) {
+        console.log(error)
+    }
+  }
+
+
+  const handleDeleteComment = async(commentId)=>{
+    try {
+      const response = await api.delete(`/video/delete-comment/${commentId}`);
+      // console.log(response.data)
+      const commentList = comments.filter((comment)=> comment._id != commentId);
+      setComments(commentList)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const submitComment = async (videoId) => {
     try {
       const response = await api.post(`/video/add-comment/${videoId}`,{text:comment});
       const data = response.data.comment;
-      let newComment = {
-        username:username,
-        text:data.text,
-        createdAt:data.createdAt,
-        userId:userId
-      };
-      setComments((prev)=>[...prev,newComment])
+      getComments(videoId)
       cancelComment();
     } catch (error) {
       console.log(error)
@@ -128,40 +150,7 @@ const VideoPlayer = () => {
         />
       </div>
       {/* comments  */}
-      {
-        comments.map((comment) => (
-          <div key={comment._id} className="relative mt-8 flex space-x-4  ">
-            {/* Avatar */}
-            <div>
-              <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-semibold">
-                {comment.username.charAt(0).toUpperCase()}
-              </div>
-            </div>
-            {/* Comment Content */}
-            <div className="flex-1">
-              {/* User Info */}
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold text-sm">@{comment.username}</span>
-                <span className="text-gray-500 text-xs">
-                  {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
-                </span>
-              </div>
-
-              {/* Comment Text */}
-              <p className="text-sm mt-1">
-                {comment.text}
-              </p>
-            </div>
-
-            {/* Three Dots (Options Menu) */}
-            <div className="absolute top-4 right-4">
-              <button className="text-gray-400 hover:text-black">
-                <BsThreeDotsVertical />
-              </button>
-            </div>
-          </div>
-        ))
-      }
+      <CommentsList comments={comments} handleEditComment={handleEditComment} handleDeleteComment={handleDeleteComment}/>
     </div>
   );
 };

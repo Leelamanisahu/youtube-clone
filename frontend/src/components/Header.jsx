@@ -128,7 +128,7 @@ function Navbar() {
       </div>
 
       {/* Profile Setup Popup */}
-     <ProfileSetupPopup isVisible={isPopupVisible} onClose={togglePopup} />
+     <ProfileSetupPopup isVisible={isPopupVisible}  setIsVisible={setIsPopupVisible} onClose={togglePopup} />
       
  
     </div>

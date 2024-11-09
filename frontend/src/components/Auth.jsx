@@ -69,7 +69,7 @@ const Auth = () => {
         }))
         // console.log('Success:', data.user);
         Cookies.set('access_token', data.token, { expires: 1, sameSite: 'None', secure: true });
-        window.location = "/";
+        // window.location = "/";
         // navigate("/");
       } else {
         setError(response.data.message);

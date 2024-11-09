@@ -4,7 +4,7 @@ import api from '../axios/api';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/userSlice';
 
-const ProfileSetupPopup = ({ isVisible, onClose }) => {
+const ProfileSetupPopup = ({ isVisible,setIsVisible, onClose }) => {
   if (!isVisible) return null;
 
 
@@ -46,7 +46,7 @@ const ProfileSetupPopup = ({ isVisible, onClose }) => {
               channels:data.channels
         }))
             onClose();
-            isVisible(false);
+            setIsVisible(false);
         } catch (error) {
             console.log(error);
         }

@@ -11,6 +11,7 @@ import Home from './components/Home.jsx'
 import Auth from './components/Auth.jsx'
 import VideoPage from './components/VideoPage.jsx'
 import Channel from './components/Channel.jsx'
+import SearchResult from './components/SearchResult.jsx'
 
 
 
@@ -34,6 +35,10 @@ const appRouter = createBrowserRouter([
       {
         path:"/channel/:channelId",
         element:<Channel/>
+      },
+      {
+        path:"/search/:searchQuery",
+        element:<SearchResult/>
       }
      
     ]

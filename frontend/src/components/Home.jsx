@@ -13,12 +13,13 @@ const Home = () => {
   const api_uri = import.meta.env.VITE_API_URI;
 
   const [videos,setVideos] = useState([]);
- 
 
-  const getVideos = async(req,res,next)=>{
+  const[categories,setCategories] = useState('');
+
+  const getVideos = async(cat)=>{
       try {
         console.log("working")
-        const response = await api.get(`/video/get`);
+        const response = await api.get(`/video/get?genre=${cat}`);
         const data = response.data;
         setVideos(data);
       } catch (error) {
@@ -27,8 +28,10 @@ const Home = () => {
   }
 
   useEffect(()=>{
-    getVideos()
-  },[])
+    getVideos(categories)
+  },[categories])
+
+  // console.log(categories)
 
   // const videos = [
   //   {
@@ -296,12 +299,12 @@ const Home = () => {
     <div className="flex mt-20">
     <Sidebar />
     <div className="h-[calc(100vh-6.625rem)] overflow-y-scroll overflow-x-hidden">
-      <ListItems />
+      <ListItems setCategories={setCategories} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-5 " >
       {
         videos &&
          videos.map((item) => {
-          return (<Video key={item.id} video={item} />);
+          return (<Video  key={item._id} video={item} />);
         })
       }
       </div>

@@ -6,6 +6,7 @@ import CustomError from "../utils/CustomeError.js";
 import { getVideoDurationInSeconds } from 'get-video-duration';
 import fs from 'fs';
 import path from 'path';
+import { channel } from "diagnostics_channel";
 
 export const addVideo = async (req, res, next) => {
     try {
@@ -112,6 +113,8 @@ export const getVideo = async(req,res,next)=>{
                     thumbnail: 1,
                     description: 1,
                     channelName:'$channelInfo.channelName',
+                    channelId:'$channelInfo._id',
+                    channelImage:'$channelInfo.channelBanner',
                     views:1,
                     duration:1,
                     genere:1,
@@ -354,6 +357,72 @@ export const updateComment = async (req, res, next) => {
     }
   };
   
+
+export const searchVideo = async(req,res,next)=>{               
+    try {
+        const {searchQuery} = req.query;
+        // console.log(searchQuery)
+        // const videoId = new mongoose.Types.ObjectId(req.params.id)
+        const pipeline = [
+            {
+                $match: {
+                    title: { 
+                        $regex: searchQuery, // Use the search query as a partial match
+                        $options: "i" // Case-insensitive search
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "channels",
+                    localField: "channelId",
+                    foreignField: "_id",
+                    as: "channelInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "comments",
+                    foreignField: "_id",
+                    as: "commentInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "uploader",
+                    foreignField: "_id",
+                    as: "userInfo"
+                }
+            },
+            { $unwind: "$channelInfo" },
+            { $unwind: "$userInfo" },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    video: 1,
+                    thumbnail: 1,
+                    description: 1,
+                    channelName: "$channelInfo.channelName",
+                    channelImage:'$channelInfo.channelBanner',
+                    channelId:'$channelInfo._id',
+                    views: 1,
+                    genre: 1,
+                    likes: 1, 
+                    dislikes: 1,
+                    createdAt:1
+                }
+            }
+        ];
+        
+        const videos = await Video.aggregate(pipeline)
+        return res.status(200).json(videos)
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 export const getVideoComment = async(req,res,next)=>{

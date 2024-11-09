@@ -18,14 +18,14 @@ const CommentsList = ({ comments, handleEditComment, handleDeleteComment }) => {
   };
 
   const startEditing = (comment) => {
-    console.log(comment._id)
+    // console.log(comment._id)
     setEditingCommentId(comment._id);
     setEditText(comment.text);
     setOpenMenu(null); // Close the menu
   };
 
   const saveEdit = (commentId) => {
-    console.log(commentId)
+    // console.log(commentId)
     handleEditComment(commentId, editText);
     setEditingCommentId(null);
   };
@@ -36,7 +36,7 @@ const CommentsList = ({ comments, handleEditComment, handleDeleteComment }) => {
         <div key={comment._id} className="relative mt-8 flex space-x-4">
           {/* Avatar */}
 
-          {console.log("comment id", comment._id)}
+          {/* {console.log("comment id", comment._id)} */}
           <div>
             <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-semibold">
               {comment.username.charAt(0).toUpperCase()}

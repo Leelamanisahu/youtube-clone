@@ -14,6 +14,7 @@ const Channel = () => {
     const [videos,setVideos] = useState([]);
 
     const userId = useSelector((state)=>state.user._id)
+    const userChannel = useSelector((state)=>state.user.channels)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit , setIsEdit] = useState({});
@@ -30,7 +31,7 @@ const Channel = () => {
    const getChannelData = async(id)=>{
     try {
       const response = await api.get(`channel/get/${id}`);
-      console.log(response.data)
+      // console.log(response.data)
       setChannelsDetails(response.data)
       setVideos(response?.data?.videos)
     } catch (error) {
@@ -59,8 +60,9 @@ const handleDelete = async(videoId) => {
 
    useEffect(()=>{
     getChannelData(channelId)
-   },[channelId])
-
+  },[channelId])
+  
+ 
   return (
      <div className="bg-gray-100 mt-12 min-h-screen relative">
       {/* Channel Header Section */}
@@ -122,11 +124,15 @@ const handleDelete = async(videoId) => {
             ))
           }
           {/* Add more video cards as needed */}
+          {
+            channelId === userChannel
+            &&
         <div
          onClick={openModal}
         className='p-4 bg-slate-400 text-white w-20 h-14 self-center rounded-lg cursor-pointer hover:bg-slate-300 transition-all flex justify-center items-center'>
         <IoAddCircleOutline size={30} color='black'/>
          </div>
+          }
         </div>
       </div>
       <VideoUploadModal isOpen={isModalOpen} onClose={closeModal} isEdit={isEdit} channelId={channelId} getChannelData={getChannelData}  />

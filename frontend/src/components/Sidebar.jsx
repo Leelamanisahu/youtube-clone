@@ -163,6 +163,12 @@ const Sidebar = () => {
 
       const navigate = useNavigate();
 
+      const handleNavigate = (path)=>{
+        if(path){
+          navigate(path)
+        }
+      }
+
   return (
     <div className={`px-6 ${toggle.isOpen ? 'w-[16%] ':' w-[6%] hide-scroll-bar'} h-[calc(100vh-6.625rem)]  overflow-y-scroll overflow-x-hidden`}>
       <div className=" space-y-3 items-center">
@@ -170,7 +176,7 @@ const Sidebar = () => {
           return (
             <div
               key={item.id}
-              onClick={()=>navigate(`${item?.path}`)}
+              onClick={()=>handleNavigate(item?.path)}
               className={` flex items-center space-x-6 hover:bg-gray-300 duration-300 rounded-xl p-2`}
             >
               <div className="text-xl cursor-pointer">{item.icon}</div>

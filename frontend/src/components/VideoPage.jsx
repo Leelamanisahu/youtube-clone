@@ -47,7 +47,7 @@ const VideoPage = () => {
       <div className="lg:w-[30%] w-full bg-white p-4 border-l border-gray-200">
         {
           suggestionVideo.length >0?suggestionVideo.map((video)=>(
-            <SuggestedVideos  video={video}/>
+            <SuggestedVideos key={video._id} video={video}/>
           )):
           <h2>
             Loading.....

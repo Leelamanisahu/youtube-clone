@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { FiMoreHorizontal } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const ChannelVideo = ({ video, onEdit, onDelete,editeable }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const navigate =  useNavigate();
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+    const handleNavigate = (id)=>{
+        console.log(id);
+        navigate(`/video/${id}`)
+    }
+
     return (
-        <div key={video._id} className="bg-white rounded-lg shadow-lg relative">
+        <div key={video._id} className="bg-white rounded-lg shadow-lg relative"
+        >
             {/* Video Thumbnail */}
             <img
                 src={`http://localhost:5001${video.thumbnail}`}
                 alt="Video Thumbnail"
                 className="w-full h-32 object-cover rounded-t-lg"
+               
             />
 
             {/* Video Details */}
-            <div className="p-4">
+            <div className="p-4 cursor-pointer" 
+             onClick={()=>handleNavigate(video._id)}
+             >
                 <h3 className="font-bold text-sm">{video.title}</h3>
                 <p className="text-xs text-gray-500">
                     {formatDistanceToNow(new Date(video.createdAt), { addSuffix: true })}

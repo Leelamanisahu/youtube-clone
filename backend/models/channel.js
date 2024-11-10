@@ -8,7 +8,7 @@ const channelSchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User', // Assuming the owner is a reference to a User model
+    ref: 'User', 
     required: true,
   },
   description: {
@@ -25,7 +25,7 @@ const channelSchema = new mongoose.Schema({
   },
   videos: [{
     type: String,
-    ref: 'Video', // Assuming there is a Video model
+    ref: 'Video', 
   }],
 }, { timestamps: true });
 

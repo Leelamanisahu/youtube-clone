@@ -58,8 +58,7 @@ const Auth = () => {
       const response = await axios.post(endpoint, payload);
             const data = response.data;
       if (response.data) {
-        // Handle success, like storing tokens or redirecting
-        // console.log(data.user)
+    
         dispatch(loginSuccess({
             _id:data.user._id,
             username:data.user.username,
@@ -70,9 +69,8 @@ const Auth = () => {
       dispatch(createChannel({
         channels:data.user.channels
       }))
-        // console.log('Success:', data.user);
+       
         Cookies.set('access_token', data.token, { expires: 1, sameSite: 'None', secure: true });
-        // window.location = "/";
         navigate("/");
       } else {
         setError(response.data.message);

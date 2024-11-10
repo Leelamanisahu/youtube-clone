@@ -21,11 +21,12 @@ const Video = ({ video }) => {
             <img
               onClick={()=>handleNavigate(`/video/${video._id}`)}
               className="h-full w-full object-cover"
-              src={video?.thumbnail}  // Use 'thumbnail' from the new data structure
+              src={video?.thumbnail}  
               alt={video?.title}
             />
-            {video?.duration && <Time time={video?.duration} />} {/* Assuming 'Time' needs length */}
+            {video?.duration && <Time time={video?.duration} />}
           </div>
+
           {/* channel logo & title */}
           <div className="flex mt-3 space-x-2" 
           onClick={()=>{handleNavigate(`/channel/${video.channelId}`)}}
@@ -34,7 +35,7 @@ const Video = ({ video }) => {
               <div className="flex h-9 w-9 rounded-full overflow-hidden border">
                 <img
                   className="h-full w-full rounded-full overflow-hidden"
-                  src={video.channelImage}  // Assuming no avatar in data, using a placeholder
+                  src={video.channelImage} 
                   alt={video?.channelName}
                 />
               </div>
@@ -45,7 +46,6 @@ const Video = ({ video }) => {
               </span>
               <span className="flex items-center font-semibold mt-2 text-[12px] text-gray-600">
                 {video?.channelName}
-                {/* Assuming all channels are verified for now, else conditionally render */}
                 <BsFillCheckCircleFill className="text-gray-600 ml-1 text-[12px]" />
               </span>
               <div className="flex text-gray-500 text-[12px]">
@@ -53,8 +53,7 @@ const Video = ({ video }) => {
                 <span className="flex text-[24px] leading-none font-bold relative top-[-10px] mx-1">
                   .
                 </span>
-                {/* Assuming video has a published time */}
-                <span>{`Published: ${video?.description}`}</span> {/* For demo, using description as time */}
+                <span>{`Published: ${video?.description}`}</span> 
               </div>
             </div>
           </div>

@@ -6,8 +6,7 @@ import multer from 'multer';
 
 const videoRouter = express.Router();
 
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage });
+
 
 videoRouter.post("/add",protect, upload.fields([
     { name: 'thumbnail', maxCount: 1 }, 

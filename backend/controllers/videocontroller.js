@@ -48,7 +48,6 @@ export const addVideo = async (req, res, next) => {
        
     const videoPath = videoResult.secure_url;
     const thumbnailPath = thumbnailResult.secure_url;
-    //   const thumbnailPath = `/images/${thumbnailFile.filename}`;
   
     //     // Get video duration
     const duration = videoResult.duration || 0;
@@ -369,14 +368,12 @@ export const updateComment = async (req, res, next) => {
 export const searchVideo = async(req,res,next)=>{               
     try {
         const {searchQuery} = req.query;
-        // console.log(searchQuery)
-        // const videoId = new mongoose.Types.ObjectId(req.params.id)
         const pipeline = [
             {
                 $match: {
                     title: { 
-                        $regex: searchQuery, // Use the search query as a partial match
-                        $options: "i" // Case-insensitive search
+                        $regex: searchQuery, 
+                        $options: "i" 
                     }
                 }
             },

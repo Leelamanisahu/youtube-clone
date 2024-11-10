@@ -35,7 +35,6 @@ const CommentsList = ({ comments, handleEditComment, handleDeleteComment }) => {
         <div key={comment._id} className="relative mt-8 flex space-x-4">
           {/* Avatar */}
 
-          {/* {console.log("comment id", comment._id)} */}
           <div>
             <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-semibold">
               {comment.username.charAt(0).toUpperCase()}

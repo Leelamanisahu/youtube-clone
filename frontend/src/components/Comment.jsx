@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 const Comment = ({videoId,isComment,comment,commentHandler,cancelComment,submitComment}) => {
   
+  const username = useSelector(state=>state.user.username)
 
   return (
     <div className='w-full flex flex-col items-start'>
         <div className='w-full flex justify-center items-center gap-5'>
-            <img src="http://localhost:5001/images/thumbnail-1729154845065-925985498-.png" className='w-10 h-10 rounded-full' alt="" />
+        <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-semibold">
+              {username.charAt(0).toUpperCase()}
+            </div>
             <div className='w-full flex flex-col'>
             <input 
             value={comment}

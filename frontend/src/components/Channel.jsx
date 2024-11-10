@@ -17,7 +17,7 @@ const Channel = () => {
     const userChannel = useSelector((state)=>state.user.channels)
         
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEdit , setIsEdit] = useState({});
+    const [isEdit , setIsEdit] = useState(null);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -121,7 +121,6 @@ const handleDelete = async(videoId) => {
                />
             ))
           }
-          {/* Add more video cards as needed */}
         {
             channelId === userChannel
             &&

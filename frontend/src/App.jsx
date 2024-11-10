@@ -20,7 +20,6 @@ const App = () => {
   const token = Cookies.get('access_token');
   const currentUser = useSelector((state) => state.user.username);
 
-  console.log(currentUser)
 
   const isTokenExpired = (token) => {
     if (!token) return true;

@@ -71,7 +71,8 @@ const Auth = () => {
       }))
        
         Cookies.set('access_token', data.token, { expires: 1, sameSite: 'None', secure: true });
-        navigate("/");
+        window.location = "/"
+        // navigate("/");
       } else {
         setError(response.data.message);
       }

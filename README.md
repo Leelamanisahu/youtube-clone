@@ -38,3 +38,19 @@ This project is a YouTube-inspired platform where users can create profiles, wat
    - cd frontend
    - npm install
    - npm run dev
+
+- **how to use**
+   - create profile and register
+   - check the vidoe by touching on the thumbnail and go to channel by touching on the channel image
+   - to uplaod video create channel to create channel touch on the user profile and touch the your channel
+   - if user have alredy created the channel then it goes to the user channel and if not then modal open to create it
+   - after creating the channel it goes to the channel page and in the channel page there is + button 
+   - after clicking in the + button the modal will open to the upload video from and give thumbnaiil and all the details
+   - after clicking on the uplaod it will upload 
+   - in the channel video will be seen and in the thumbnail three dots will apear that will open menu in that there will be option for the edit and delete
+   - click on edit and modal will open and you can update the video 
+   - click on the delete and you can delete the video
+   - in the video there are comment section where you can uplaod the comment 
+   - in this comment there three dot 
+   - after clicking on this three dot the edit and delete menu will be apear where you can edit and delete the comment
+   

@@ -37,7 +37,7 @@ const SearchResult = () => {
         <div className='flex flex-col justify-center items-center w-[100%]'>
           {
             searchResult.map((video)=>(
-              <div key={video._id} className="flex space-x-4 p-4  transition duration-200 w-[70%]">
+              <div key={video._id} className="flex space-x-4 p-4  rounded-md shadow-sm transition duration-200 w-[70%]">
               {/* Thumbnail */}
               <div className="w-96 h-64 relative">
                 <img

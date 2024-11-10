@@ -15,7 +15,7 @@ const Video = ({ video }) => {
   return (
     <div  className="">
       <div>
-        <div className="flex flex-col">
+        <div className="flex flex-col cursor-pointer">
           {/* thumbnail & duration */}
           <div className="relative h-48 md:h-56 rounded-xl hover:rounded-none duration-200 overflow-hidden">
             <img

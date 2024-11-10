@@ -14,7 +14,6 @@ export const addVideo = async (req, res, next) => {
       const uploader = req.user.id;
       const files = req.files;
       const { title, description, channelId,genere } = req.body;
-       console.log(files.video[0])
        
        
     //   // Check if all required files are present

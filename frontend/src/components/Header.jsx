@@ -97,8 +97,7 @@ function Navbar() {
       </div>
 
       <div className="flex space-x-5 items-center relative">
-        <RiVideoAddLine className="text-2xl cursor-pointer"
-         />
+        {/* <RiVideoAddLine className="text-2xl cursor-pointer" /> */}
         <AiOutlineBell className="text-2xl" />
         <div onClick={toggleMenu} className="cursor-pointer">
           <Avatar

@@ -18,7 +18,6 @@ const Home = () => {
 
   const getVideos = async(cat)=>{
       try {
-        console.log("working")
         const response = await api.get(`/video/get?genre=${cat}`);
         const data = response.data;
         setVideos(data);

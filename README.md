@@ -30,9 +30,11 @@ This project is a YouTube-inspired platform where users can create profiles, wat
     cd youtube-clone
  
     **run backend**
-    cd backend
-    npm start
+   - cd backend
+   - npm install
+   - npm start
 
     **run frontend**
-    cd frontend
-    npm start
+   - cd frontend
+   - npm install
+   - npm run dev

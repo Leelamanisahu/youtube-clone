@@ -11,7 +11,6 @@ const CommentsList = ({ comments, handleEditComment, handleDeleteComment }) => {
 
   const userId = useSelector(state=>state.user._id);
 
-  console.log("user id ",userId)
 
   const toggleMenu = (commentId) => {
     setOpenMenu(openMenu === commentId ? null : commentId);
@@ -61,7 +60,6 @@ const CommentsList = ({ comments, handleEditComment, handleDeleteComment }) => {
                   onChange={(e) => setEditText(e.target.value)}
                   className="text-sm p-1 border w-[80%] border-gray-300 rounded"
                 />
-                {console.log(comment)}
                 <button
                   onClick={() => saveEdit(comment._id)}
                   className="text-sm text-blue-500 hover:underline"

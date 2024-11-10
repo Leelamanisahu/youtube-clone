@@ -106,7 +106,7 @@ const VideoPlayer = () => {
         {
           video?.video && <ReactPlayer
             className="absolute top-0 left-0"
-            url={`http://localhost:5001${video?.video}`}
+            url={video?.video}
             width="100%"
             height="100%"
             controls
@@ -120,7 +120,7 @@ const VideoPlayer = () => {
         <h1 className="text-lg font-semibold">{video?.title}</h1>
         <div className="flex lg:w-[calc(100%-260px)] items-center justify-between mt-2">
           <div className='flex gap-5 items-center'>
-            <img src="http://localhost:5001/images/thumbnail-1729154845065-925985498-.png" className='w-10 h-10  rounded-full object-cover' alt="" />
+            <img src={video?.channelImage} className='w-10 h-10  rounded-full object-cover' alt="" />
             <div className='flex flex-col '>
               <div className='font-bold lg:text-lg'>{video?.channelName}</div>
               <div>subscriber count</div>

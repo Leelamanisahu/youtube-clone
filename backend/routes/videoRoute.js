@@ -2,8 +2,12 @@ import express from "express";
 import { addComment, addVideo, deleteComment, deleteVideo, getOneVideo, getVideo, getVideoComment, likeOrDislikeVideo, searchVideo, suggetionVideo, updateComment, updateVideo } from "../controllers/videocontroller.js";
 import upload from "../middleware/multer.js";
 import { protect } from "../middleware/Verification.js";
+import multer from 'multer';
+
 const videoRouter = express.Router();
 
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage });
 
 videoRouter.post("/add",protect, upload.fields([
     { name: 'thumbnail', maxCount: 1 }, 

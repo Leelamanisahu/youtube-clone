@@ -11,7 +11,7 @@ const SuggestedVideos = ({video}) => {
       onClick={()=>{navigate(`/video/${video._id}`)}}
     >
         <div  className="flex space-x-4 cursor-pointer">
-          <img src={`http://localhost:5001/images/thumbnail-1729055793798-69120413-.png`} alt="thumbnail" className="w-40 h-24 object-cover" />
+          <img src={video?.thumbnail} alt="thumbnail" className="w-40 h-24 object-cover" />
           <div className="flex flex-col">
             <h3 className="text-sm font-semibold line-clamp-2">{video.title}</h3>
             <span className="text-xs text-gray-500">{video.channelName}</span>

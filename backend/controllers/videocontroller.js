@@ -7,43 +7,55 @@ import { getVideoDurationInSeconds } from 'get-video-duration';
 import fs from 'fs';
 import path from 'path';
 import { channel } from "diagnostics_channel";
+import cloudinary from "../middleware/cloudinaryConfig.js";
 
 export const addVideo = async (req, res, next) => {
     try {
       const uploader = req.user.id;
       const files = req.files;
       const { title, description, channelId,genere } = req.body;
+       console.log(files.video[0])
        
-      // Check if all required files are present
+       
+    //   // Check if all required files are present
       if (!files || !files.video || !files.thumbnail) {
         return next(new CustomError('Both video and thumbnail files are required', 400));
       }
   
-      // Check if channel exists
+    //   // Check if channel exists
       const isExist = await Channel.findById(channelId);
       if (!isExist) {
         return next(new CustomError('Channel not found', 404));
       }
   
-      // Check if video and thumbnail filenames exist
+    //   // Check if video and thumbnail filenames exist
       const videoFile = files.video[0];
       const thumbnailFile = files.thumbnail[0];
       if (!videoFile || !thumbnailFile) {
         return next(new CustomError('Video or thumbnail file is missing', 400));
       }
   
-      // Generate file paths
-      const videoPath = `/videos/${videoFile.filename}`;
-      const thumbnailPath = `/images/${thumbnailFile.filename}`;
+    //   // Generate file paths
+    const videoResult = await cloudinary.uploader.upload(videoFile.path,{
+        folder:"yt-video",
+        resource_type: "video"
+       })
+
+
+    const thumbnailResult = await cloudinary.uploader.upload(thumbnailFile.path,{
+        folder:"yt-image",
+        resource_type:"image"
+    })
+       
+    const videoPath = videoResult.secure_url;
+    const thumbnailPath = thumbnailResult.secure_url;
+    //   const thumbnailPath = `/images/${thumbnailFile.filename}`;
   
-
-      const absoluteVideoPath = path.resolve(`public${videoPath}`);
-
-        // Get video duration
-        const duration = await getVideoDurationInSeconds(absoluteVideoPath);
+    //     // Get video duration
+    const duration = videoResult.duration || 0;
     const genereArr = genere.split(",");
   
-      // Create new video object
+    //   // Create new video object
       const video = new Video({
         title,
         description,
@@ -56,26 +68,23 @@ export const addVideo = async (req, res, next) => {
         genere:genereArr,
       });
 
-      // Handle the channel's videos array
+    //   // Handle the channel's videos array
       if (!Array.isArray(isExist.videos)) {
         isExist.videos = [];
       }
   
-      // Push new video ID to the channel's videos array
+    //   // Push new video ID to the channel's videos array
       isExist.videos.push(video._id);
-      // Save both the channel and video
+    //   // Save both the channel and video
       await isExist.save();
       await video.save();
   
       return res.status(200).json(video);
     } catch (error) {
-        console.log(error)
       next(error);
     }
   };
   
-
-
 export const getVideo = async(req,res,next)=>{
     try {
         // const videos = await Video.find({});
@@ -552,19 +561,24 @@ export const updateVideo = async (req, res, next) => {
         // Handle video file update if new video file is provided
         if (files && files.video) {
             const videoFile = files.video[0];
-            const newVideoPath = `/videos/${videoFile.filename}`;
-            const absoluteVideoPath = path.resolve(`public${newVideoPath}`);
-            const duration = await getVideoDurationInSeconds(absoluteVideoPath);
+            const videoResult = await cloudinary.uploader.upload(videoFile.path,{
+                folder:"yt-video",
+                resource_type: "video"
+               })
 
-            video.video = newVideoPath;
+            video.video = videoResult.secure_url;
+            const duration = videoResult.duration || 0;
             video.duration = duration;
         }
 
         // Handle thumbnail file update if new thumbnail file is provided
         if (files && files.thumbnail) {
             const thumbnailFile = files.thumbnail[0];
-            const newThumbnailPath = `/images/${thumbnailFile.filename}`;
-            video.thumbnail = newThumbnailPath;
+            const thumbnailResult = await cloudinary.uploader.upload(thumbnailFile.path,{
+                folder:"yt-image",
+                resource_type:"image"
+            })
+        video.thumbnail = thumbnailResult.secure_url;
         }
 
         // Save the updated video

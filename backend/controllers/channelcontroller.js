@@ -1,3 +1,4 @@
+import cloudinary from "../middleware/cloudinaryConfig.js";
 import Channel from "../models/channel.js";
 import User from "../models/user.js";
 import CustomError from "../utils/CustomeError.js";
@@ -12,8 +13,13 @@ export const createChannel = async(req,res,next)=>{
         if(isExist){
             return next(new CustomError("Channel name is already taken",401));
         }
+        const channelBannerResult = await cloudinary.uploader.upload(file.path,{
+          folder:"yt-image",
+          resource_type:"image"
+      }) 
+        const channelBanner = channelBannerResult.secure_url;
        const channel = new Channel({
-        channelName,owner,channelBanner:`/images/${file.filename}`,description
+        channelName,owner,channelBanner,description
        })
        await channel.save();
        const user = await User.findByIdAndUpdate(owner,{$set:{channels:channel._id}});

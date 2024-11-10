@@ -41,7 +41,7 @@ const SearchResult = () => {
               {/* Thumbnail */}
               <div className="w-96 h-64 relative">
                 <img
-                  src={`http://localhost:5001${video.thumbnail}`}
+                  src={video.thumbnail}
                 //   alt={video.title}
                 onClick={()=>{handleNavigate(`/video/${video._id}`)}}
                   className="w-full h-full object-cover rounded-lg"
@@ -76,8 +76,8 @@ const SearchResult = () => {
                   onClick={()=>handleNavigate(`/channel/${video.channelId}`)}
                 className="flex items-center space-x-2 mt-2">
                   <div className="w-6 h-6 bg-gray-500 rounded-full">
-                    <img src={`http://localhost:5001${video.channelImage}`}
-                                      className="w-full h-full object-cover rounded-lg"
+                    <img src={video.channelImage}
+                    className="w-full h-full object-cover rounded-lg"
                     alt="channel image" srcset="" />
                   </div>
                   <span className="text-sm">

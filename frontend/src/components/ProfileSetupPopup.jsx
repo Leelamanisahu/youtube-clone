@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { MdAccountCircle } from 'react-icons/md';
 import api from '../axios/api';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../redux/userSlice';
+import { createChannel, loginSuccess } from '../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileSetupPopup = ({ isVisible,setIsVisible, onClose }) => {
   if (!isVisible) return null;
 
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [loading,setLoading] = useState(false);
+
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [inputs,setInputs] = useState({
@@ -36,18 +41,23 @@ const ProfileSetupPopup = ({ isVisible,setIsVisible, onClose }) => {
 
   const handleSubmit = async()=>{
         try {
+          setLoading(true);
             const response = await api.post("/channel/create",inputs,{
                 headers:{
                     "Content-Type":"multipart/form-data"
                 }
             });
             const data = response.data;
-            dispatch(loginSuccess({
-              channels:data.channels
+            // console.log(data)
+          dispatch(createChannel({
+            channels:data._id
         }))
             onClose();
             setIsVisible(false);
-        } catch (error) {
+            setLoading(false);
+            navigate(`/channel/${data._id}`)
+          } catch (error) {
+            setLoading(false);
             console.log(error);
         }
   }
@@ -107,8 +117,15 @@ const ProfileSetupPopup = ({ isVisible,setIsVisible, onClose }) => {
               Cancel
             </button>
             <button className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            onClick={handleSubmit}>
-              Create channel
+            onClick={handleSubmit}
+              disabled={loading}
+            >
+              {
+                loading ? 
+                "loading..."
+                :
+                "Create channel"
+              }
             </button>
           </div>
         </div>

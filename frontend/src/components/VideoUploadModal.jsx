@@ -7,6 +7,7 @@ const VideoUploadModal = ({ isOpen, isEdit, onClose, channelId, getChannelData }
     const [genre, setGenre] = useState('');
     const [thumbnail, setThumbnail] = useState(null);
     const [video, setVideo] = useState(null);
+    const [loading,setLoading] = useState(false);
 
     // Populate form fields when editing
     useEffect(() => {
@@ -30,6 +31,7 @@ const VideoUploadModal = ({ isOpen, isEdit, onClose, channelId, getChannelData }
 
     const handleSubmit = async () => {
         try {
+            setLoading(true);
             const formData = new FormData();
             formData.append('title', title);
             formData.append('description', description);
@@ -37,7 +39,7 @@ const VideoUploadModal = ({ isOpen, isEdit, onClose, channelId, getChannelData }
             if (thumbnail) formData.append('thumbnail', thumbnail);
             if (video) formData.append('video', video);
             formData.append('channelId', channelId);
-            if (isEdit) {
+            if (isEdit != null) {
                 // Update existing video
                 await api.put(`/video/update/${isEdit._id}`, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -50,7 +52,9 @@ const VideoUploadModal = ({ isOpen, isEdit, onClose, channelId, getChannelData }
             }
             onClose();
             getChannelData(channelId);
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             console.error('Error uploading video:', error);
         }
     };
@@ -127,8 +131,12 @@ const VideoUploadModal = ({ isOpen, isEdit, onClose, channelId, getChannelData }
                     <button
                         className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
                         onClick={handleSubmit}
+                        disabled={loading}
                     >
-                        {isEdit ? 'Update' : 'Upload'}
+                        {
+                            loading?"loding...":
+                        isEdit ? 'Update' : 'Upload'
+                        }
                     </button>
                 </div>
             </div>

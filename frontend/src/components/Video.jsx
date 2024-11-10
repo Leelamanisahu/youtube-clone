@@ -21,7 +21,7 @@ const Video = ({ video }) => {
             <img
               onClick={()=>handleNavigate(`/video/${video._id}`)}
               className="h-full w-full object-cover"
-              src={`http://localhost:5001${video?.thumbnail}`}  // Use 'thumbnail' from the new data structure
+              src={video?.thumbnail}  // Use 'thumbnail' from the new data structure
               alt={video?.title}
             />
             {video?.duration && <Time time={video?.duration} />} {/* Assuming 'Time' needs length */}
@@ -34,7 +34,7 @@ const Video = ({ video }) => {
               <div className="flex h-9 w-9 rounded-full overflow-hidden border">
                 <img
                   className="h-full w-full rounded-full overflow-hidden"
-                  src={`http://localhost:5001/${video.channelImage}`}  // Assuming no avatar in data, using a placeholder
+                  src={video.channelImage}  // Assuming no avatar in data, using a placeholder
                   alt={video?.channelName}
                 />
               </div>

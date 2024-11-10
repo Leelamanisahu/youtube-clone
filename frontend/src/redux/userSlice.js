@@ -24,6 +24,8 @@ export const userSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.token = action.payload.token;
+        },
+        createChannel:(state,action)=>{
             state.channels = action.payload.channels;
         },
         loginFalure:(state)=>{
@@ -36,10 +38,11 @@ export const userSlice = createSlice({
             state._id = null;
             state.email = null;
             state.token = null;
+            state.channels = null;
         }
     }
 })
 
-export const {loginStart,loginFalure,loginSuccess,logout} = userSlice.actions;
+export const {loginStart,loginFalure,loginSuccess,createChannel,logout} = userSlice.actions;
 
 export default userSlice.reducer;

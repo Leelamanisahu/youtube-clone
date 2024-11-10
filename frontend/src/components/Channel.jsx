@@ -15,13 +15,11 @@ const Channel = () => {
 
     const userId = useSelector((state)=>state.user._id)
     const userChannel = useSelector((state)=>state.user.channels)
-
+        
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEdit , setIsEdit] = useState({});
 
     const openModal = () => setIsModalOpen(true);
-
-
     const closeModal = () => {
       setIsModalOpen(false)
       setIsEdit(null);
@@ -71,7 +69,7 @@ const handleDelete = async(videoId) => {
           <div className="relative">
             {/* Channel Banner */}
             <img
-              src={`http://localhost:5001${channelDetials.channelBanner}`} // Replace with banner image path
+              src={channelDetials.channelBanner} 
               alt="Channel Banner"
               className="w-full h-52 object-cover"
             />
@@ -79,7 +77,7 @@ const handleDelete = async(videoId) => {
             <div className="flex mt-10 items-center space-x-4">
               {/* Profile Image */}
               <img
-              src={`http://localhost:5001${channelDetials.channelBanner}`} // Replace with banner image path
+              src={channelDetials.channelBanner}
               alt="Profile Logo"
                 className="rounded-full w-20 h-20 border-4 border-white"
               />
@@ -124,7 +122,7 @@ const handleDelete = async(videoId) => {
             ))
           }
           {/* Add more video cards as needed */}
-          {
+        {
             channelId === userChannel
             &&
         <div

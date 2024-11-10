@@ -18,7 +18,7 @@ const ChannelVideo = ({ video, onEdit, onDelete,editeable }) => {
         >
             {/* Video Thumbnail */}
             <img
-                src={`http://localhost:5001${video.thumbnail}`}
+                src={video.thumbnail}
                 alt="Video Thumbnail"
                 className="w-full h-32 object-cover rounded-t-lg"
                

@@ -3,7 +3,7 @@ import Sidebar from './Sidebar'
 import axios from 'axios'; // Assuming you're using axios for API calls
 import Cookies from "js-cookie";
 import { useDispatch } from 'react-redux';
-import { loginStart, loginSuccess } from '../redux/userSlice';
+import { createChannel, loginStart, loginSuccess } from '../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
@@ -65,12 +65,15 @@ const Auth = () => {
             username:data.user.username,
             email : data.user.email,
             token : data.token,
-            channels:data.user.channels
-        }))
+        })
+      )
+      dispatch(createChannel({
+        channels:data.user.channels
+      }))
         // console.log('Success:', data.user);
         Cookies.set('access_token', data.token, { expires: 1, sameSite: 'None', secure: true });
         // window.location = "/";
-        // navigate("/");
+        navigate("/");
       } else {
         setError(response.data.message);
       }
